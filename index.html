@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cosmos Coderr OS</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: black;
+      overflow: hidden;
+      color: white;
+    }
+    #intro {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(ellipse at center, #0a0a2a 0%, #000 100%);
+      z-index: 10;
+      flex-direction: column;
+      text-align: center;
+    }
+    #intro button {
+      padding: 15px 30px;
+      font-size: 20px;
+      background: #0ff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    #desktop {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      background: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?auto=format&fit=crop&w=1950&q=80') center/cover;
+      position: relative;
+    }
+    .icon {
+      width: 80px;
+      text-align: center;
+      margin: 20px;
+      cursor: pointer;
+      position: absolute;
+    }
+    .icon img {
+      width: 64px;
+      height: 64px;
+    }
+    .window {
+      width: 300px;
+      height: 200px;
+      background: #111;
+      border: 2px solid #0ff;
+      position: absolute;
+      top: 100px;
+      left: 100px;
+      z-index: 5;
+      padding: 10px;
+      box-shadow: 0 0 20px #0ff;
+      cursor: move;
+    }
+    .title-bar {
+      font-weight: bold;
+      background: #0ff;
+      color: #000;
+      padding: 5px;
+      cursor: move;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="intro">
+    <h1>🌌 Welcome to Cosmos Coderr OS</h1>
+    <p>Tap to enter the universe</p>
+    <button onclick="launchOS()">Enter</button>
+  </div>
+
+  <div id="desktop">
+    <div class="icon" onclick="openApp()"
+         style="top: 50px; left: 50px;">
+      <img src="https://cdn-icons-png.flaticon.com/512/270/270014.png" />
+      <div>Notes</div>
+    </div>
+
+    <div id="appWindow" class="window" style="display:none;">
+      <div class="title-bar" onmousedown="startDrag(event)">📝 Notes</div>
+      <textarea style="width: 100%; height: 150px; background: #000; color: #0ff; border: none;"></textarea>
+    </div>
+  </div>
+
+  <script>
+    function launchOS() {
+      document.getElementById('intro').style.display = 'none';
+      document.getElementById('desktop').style.display = 'block';
+    }
+
+    function openApp() {
+      document.getElementById('appWindow').style.display = 'block';
+    }
+
+    let dragItem = null;
+    let offsetX, offsetY;
+
+    function startDrag(e) {
+      dragItem = e.target.parentElement;
+      offsetX = e.clientX - dragItem.offsetLeft;
+      offsetY = e.clientY - dragItem.offsetTop;
+      document.onmousemove = dragMove;
+      document.onmouseup = stopDrag;
+    }
+
+    function dragMove(e) {
+      if (!dragItem) return;
+      dragItem.style.left = (e.clientX - offsetX) + 'px';
+      dragItem.style.top = (e.clientY - offsetY) + 'px';
+    }
+
+    function stopDrag() {
+      dragItem = null;
+      document.onmousemove = null;
+      document.onmouseup = null;
+    }
+  </script>
+
+</body>
+</html>
