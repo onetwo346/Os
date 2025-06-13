@@ -3,135 +3,1033 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cosmos Coderr OS</title>
+  <title>Cosmos Coderr OS v5.1</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: black;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --quantum-blue: #00f7ff;
+      --plasma-pink: #ff00f7;
+      --dark-matter: #0a0a12;
+      --neutron-star: #1e1e3d;
+      --event-horizon: #2a2a5a;
+      --light-speed: 0.4s;
+      --pulse: 0 0 20px currentColor;
+    }
+    body, html {
+      width: 100vw;
+      height: 100vh;
+      background: var(--dark-matter);
+      color: var(--quantum-blue);
+      font-family: 'Exo 2', sans-serif;
       overflow: hidden;
-      color: white;
+      cursor: none;
     }
-    #intro {
+    .cosmic-cursor {
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--quantum-blue) 20%, transparent 80%);
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.1s ease;
+      transform: translate(-50%, -50%);
+      mix-blend-mode: screen;
+    }
+    #boot {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, #1e90ff33 10%, #000 70%);
       display: flex;
-      justify-content: center;
-      align-items: center;
-      background: radial-gradient(ellipse at center, #0a0a2a 0%, #000 100%);
-      z-index: 10;
       flex-direction: column;
-      text-align: center;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      animation: fadeOut 1s ease 5s forwards;
     }
-    #intro button {
+    #boot p {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2em;
+      animation: typing 3s steps(40, end), blink 0.5s step-end infinite;
+      border-right: 4px solid #1e90ff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-shadow: 0 0 15px #1e90ff;
+    }
+    #boot .stars {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
+      animation: twinkle 10s infinite;
+    }
+    @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+    @keyframes typing { from { width: 0 } to { width: 100% } }
+    @keyframes blink { from, to { border-color: transparent } 50% { border-color: #1e90ff } }
+    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+    #login {
+      display: none;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: url('https://images.unsplash.com/photo-1503923259440-784cf8a5e4cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') center center/cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 90;
+    }
+    #login::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 0;
+    }
+    #login > * {
+      position: relative;
+      z-index: 1;
+      font-family: 'Orbitron', sans-serif;
+    }
+    #login h2 {
+      font-size: 2.8em;
+      text-shadow: 0 0 20px #1e90ff;
+      margin-bottom: 30px;
+    }
+    #login input, #login select {
+      background: rgba(0, 0, 0, 0.75);
+      color: var(--quantum-blue);
+      border: 2px solid #1e90ff;
+      padding: 15px;
+      margin: 12px 0;
+      border-radius: 10px;
+      width: 320px;
+      max-width: 90%;
+      transition: box-shadow 0.3s ease;
+    }
+    #login input:focus, #login select:focus {
+      box-shadow: 0 0 20px #1e90ff;
+      outline: none;
+    }
+    #login button {
+      background: linear-gradient(45deg, var(--quantum-blue), var(--plasma-pink));
+      color: #000;
       padding: 15px 30px;
-      font-size: 20px;
-      background: #0ff;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      margin-top: 20px;
-      animation: pulse 2s infinite;
+      font-size: 1.2em;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
+    #login button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px #1e90ff;
     }
     #desktop {
       display: none;
-      width: 100vw;
-      height: 100vh;
-      background: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?auto=format&fit=crop&w=1950&q=80') center/cover;
+      width: 100%;
+      height: 100%;
+      background: url('https://images.unsplash.com/photo-1503923259440-784cf8a5e4cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    #desktop::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 0;
+    }
+    #desktop > * {
       position: relative;
+      z-index: 1;
     }
     .icon {
-      width: 80px;
-      text-align: center;
-      margin: 20px;
-      cursor: pointer;
       position: absolute;
+      text-align: center;
+      width: 100px;
+      color: var(--quantum-blue);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      text-shadow: 0 0 6px #1e90ff;
+      font-family: 'Exo 2', sans-serif;
+    }
+    .icon:hover {
+      transform: scale(1.1);
     }
     .icon img {
-      width: 64px;
-      height: 64px;
+      width: 80px;
+      filter: drop-shadow(0 0 6px #1e90ff);
+      border-radius: 15px;
     }
     .window {
-      width: 300px;
-      height: 200px;
-      background: #111;
-      border: 2px solid #0ff;
       position: absolute;
-      top: 100px;
-      left: 100px;
-      z-index: 5;
-      padding: 10px;
-      box-shadow: 0 0 20px #0ff;
-      cursor: move;
+      width: 600px;
+      height: 500px;
+      background: rgba(0, 0, 0, 0.85);
+      border: 2px solid var(--quantum-blue);
+      border-radius: 12px;
+      box-shadow: 0 0 25px var(--quantum-blue);
+      display: none;
+      z-index: 10;
+      resize: both;
+      overflow: auto;
+      min-width: 400px;
+      min-height: 300px;
     }
     .title-bar {
-      font-weight: bold;
-      background: #0ff;
+      background: linear-gradient(90deg, var(--quantum-blue), var(--plasma-pink));
       color: #000;
-      padding: 5px;
+      padding: 12px;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
       cursor: move;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+    .title-bar button {
+      background: none;
+      border: none;
+      color: #000;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .content {
+      padding: 25px;
+      height: calc(100% - 44px);
+      overflow-y: auto;
+      color: var(--quantum-blue);
+      font-family: 'Exo 2', sans-serif;
+    }
+    #dock {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.9);
+      border-radius: 20px;
+      padding: 10px;
+      display: flex;
+      gap: 15px;
+      z-index: 50;
+      box-shadow: 0 0 20px var(--quantum-blue);
+    }
+    .dock-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .dock-icon:hover {
+      transform: scale(1.2);
+    }
+    #search-bar {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 400px;
+      max-width: 90%;
+      display: none;
+      z-index: 60;
+    }
+    #search-bar input {
+      width: 100%;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.75);
+      border: 2px solid var(--quantum-blue);
+      border-radius: 20px;
+      color: var(--quantum-blue);
+      font-family: 'Exo 2', sans-serif;
+      font-size: 1.1em;
+    }
+    #today-view {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 300px;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      border-right: 2px solid var(--quantum-blue);
+      display: none;
+      z-index: 40;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .widget {
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid var(--quantum-blue);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      color: var(--quantum-blue);
+    }
+    #taskbar {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 50px;
+      background: rgba(0, 0, 0, 0.9);
+      color: var(--quantum-blue);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 25px;
+      font-family: 'Exo 2', sans-serif;
+      box-shadow: 0 -2px 20px var(--quantum-blue);
+    }
+    #start-menu {
+      position: fixed;
+      bottom: 50px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid var(--quantum-blue);
+      border-radius: 10px;
+      display: none;
+      flex-direction: column;
+      padding: 15px;
+      z-index: 20;
+      min-width: 200px;
+    }
+    #start-menu button {
+      background: none;
+      color: var(--quantum-blue);
+      border: none;
+      padding: 12px;
+      text-align: left;
+      cursor: pointer;
+      font-family: 'Exo 2', sans-serif;
+      transition: background 0.2s ease;
+    }
+    #start-menu button:hover {
+      background: rgba(0, 247, 255, 0.25);
+    }
+    #system-tray {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    #system-tray .tray-icon {
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      filter: invert(1) hue-rotate(180deg);
+    }
+    #notification-center {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      width: 300px;
+      height: 400px;
+      background: rgba(0, 0, 0, 0.85);
+      border: 2px solid var(--quantum-blue);
+      border-radius: 10px;
+      box-shadow: 0 0 20px var(--quantum-blue);
+      display: none;
+      flex-direction: column;
+      padding: 15px;
+      z-index: 30;
+    }
+    #notification-list {
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+    .notification {
+      padding: 10px;
+      border-bottom: 1px solid var(--quantum-blue);
+      margin-bottom: 5px;
+    }
+    #control-panel {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      width: 250px;
+      height: 300px;
+      background: rgba(0, 0, 0, 0.85);
+      border: 2px solid var(--quantum-blue);
+      border-radius: 10px;
+      box-shadow: 0 0 20px var(--quantum-blue);
+      display: none;
+      flex-direction: column;
+      padding: 15px;
+      z-index: 30;
+    }
+    #control-panel button {
+      background: var(--quantum-blue);
+      color: #000;
+      padding: 8px;
+      margin: 5px 0;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: 'Exo 2', sans-serif;
+      transition: transform 0.2s ease;
+    }
+    #control-panel button:hover {
+      transform: scale(1.05);
+    }
+    #file-explorer {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px;
+      height: 400px;
+      background: rgba(0, 0, 0, 0.85);
+      border: 2px solid var(--quantum-blue);
+      border-radius: 12px;
+      box-shadow: 0 0 25px var(--quantum-blue);
+      display: none;
+      flex-direction: column;
+      padding: 20px;
+      z-index: 40;
+    }
+    #file-list {
+      flex-grow: 1;
+      overflow-y: auto;
+      margin-top: 10px;
+    }
+    .file-item {
+      padding: 10px;
+      border-bottom: 1px solid var(--quantum-blue);
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .file-item:hover {
+      background: rgba(0, 247, 255, 0.2);
+    }
+    .app-store-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+      padding: 20px;
+    }
+    .app-item {
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid var(--quantum-blue);
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .app-item:hover {
+      transform: scale(1.05);
+    }
+    .app-item img {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
+  <div class="cosmic-cursor" id="cursor"></div>
+  <audio id="bootSound" src="https://www.soundjay.com/buttons/beep-01a.mp3"></audio>
+  <audio id="clickSound" src="https://www.soundjay.com/buttons/beep-07.mp3"></audio>
 
-  <div id="intro">
-    <h1>🌌 Welcome to Cosmos Coderr OS</h1>
-    <p>Tap to enter the universe</p>
-    <button onclick="launchOS()">Enter</button>
+  <div id="boot">
+    <div class="stars"></div>
+    <p>Initializing Cosmic Nexus...</p>
+  </div>
+
+  <div id="login">
+    <h2>Welcome to Cosmos Coderr OS v5.1</h2>
+    <input type="text" placeholder="Enter Cosmic Name" id="username">
+    <select id="rank">
+      <option value="Starborn">Starborn</option>
+      <option value="Celestial Dev">Celestial Dev</option>
+      <option value="Etherlinker">Etherlinker</option>
+      <option value="Omni Root">Omni Root</option>
+    </select>
+    <button onclick="launchOS()">Enter Cosmic Nexus</button>
   </div>
 
   <div id="desktop">
-    <div class="icon" onclick="openApp()"
-         style="top: 50px; left: 50px;">
-      <img src="https://cdn-icons-png.flaticon.com/512/270/270014.png" />
-      <div>Notes</div>
+    <!-- Desktop Icons -->
+    <div class="icon" style="top: 60px; left: 60px;" onclick="openApp('soulApp')">
+      <img src="https://cdn-icons-png.flaticon.com/512/1828/1828911.png" />
+      <div>SoulScan</div>
+    </div>
+    <div class="icon" style="top: 60px; left: 180px;" onclick="openApp('aiApp')">
+      <img src="https://cdn-icons-png.flaticon.com/512/4712/4712039.png" />
+      <div>CoderrGPT</div>
+    </div>
+    <div class="icon" style="top: 180px; left: 60px;" onclick="openApp('mapApp')">
+      <img src="https://cdn-icons-png.flaticon.com/512/2995/2995329.png" />
+      <div>Star Map</div>
+    </div>
+    <div class="icon" style="top: 180px; left: 180px;" onclick="openApp('settingsApp')">
+      <img src="https://cdn-icons-png.flaticon.com/512/126/126794.png" />
+      <div>Settings</div>
+    </div>
+    <div class="icon" style="top: 300px; left: 60px;" onclick="openApp('fileExplorer')">
+      <img src="https://cdn-icons-png.flaticon.com/512/1041/1041986.png" />
+      <div>File Explorer</div>
+    </div>
+    <div class="icon" style="top: 300px; left: 180px;" onclick="openApp('appStore')">
+      <img src="https://cdn-icons-png.flaticon.com/512/1039/1039649.png" />
+      <div>App Store</div>
     </div>
 
-    <div id="appWindow" class="window" style="display:none;">
-      <div class="title-bar" onmousedown="startDrag(event)">📝 Notes</div>
-      <textarea style="width: 100%; height: 150px; background: #000; color: #0ff; border: none;"></textarea>
+    <!-- App Windows -->
+    <div id="soulApp" class="window" style="top:140px; left:140px;">
+      <div class="title-bar" onmousedown="startDrag(event)">
+        <span>🔮 SoulScan</span>
+        <button onclick="closeApp('soulApp')">✖</button>
+      </div>
+      <div class="content">
+        <p>Analyzing aura...</p>
+        <p>Energy Pattern: <b>Crystalline Ascendant</b></p>
+        <p>Starseed Origin: <b>Lyra</b></p>
+      </div>
+    </div>
+
+    <div id="aiApp" class="window" style="top:190px; left:190px;">
+      <div class="title-bar" onmousedown="startDrag(event)">
+        <span>🤖 CoderrGPT</span>
+        <button onclick="closeApp('aiApp')">✖</button>
+      </div>
+      <div class="content">
+        <input type="text" id="aiInput" placeholder="Ask CoderrGPT..." style="width: 100%; margin-bottom: 15px;">
+        <div id="aiOutput">This is a simulated AI. Type your query above.</div>
+      </div>
+    </div>
+
+    <div id="mapApp" class="window" style="top:240px; left:240px;">
+      <div class="title-bar" onmousedown="startDrag(event)">
+        <span>🌌 Star Map</span>
+        <button onclick="closeApp('mapApp')">✖</button>
+      </div>
+      <div class="content">
+        <p>Your current constellation: <b>Orion's Gate</b></p>
+        <p>Portal Opens: <b>June 22, 3:33 AM</b></p>
+        <canvas id="starChart" width="400" height="150"></canvas>
+      </div>
+    </div>
+
+    <div id="settingsApp" class="window" style="top:160px; left:160px;">
+      <div class="title-bar" onmousedown="startDrag(event)">
+        <span>⚙ Settings</span>
+        <button onclick="closeApp('settingsApp')">✖</button>
+      </div>
+      <div class="content">
+        <p>Background: <select id="bgSelect" onchange="changeBackground()">
+          <option value="https://images.unsplash.com/photo-1503923259440-784cf8a5e4cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80">Nebula</option>
+          <option value="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80">Galaxy</option>
+        </select></p>
+        <p>Theme: <select id="themeSelect" onchange="changeTheme()">
+          <option value="blue">Blue</option>
+          <option value="purple">Purple</option>
+        </select></p>
+        <p>Workspaces: <input type="number" id="workspaceCount" min="1" max="5" value="1" onchange="updateWorkspaces()"></p>
+        <p>Accessibility: <select id="accessSelect" onchange="changeAccessibility()">
+          <option value="default">Default</option>
+          <option value="high-contrast">High Contrast</option>
+        </select></p>
+      </div>
+    </div>
+
+    <div id="fileExplorer" class="window" style="top:150px; left:150px;">
+      <div class="title-bar" onmousedown="startDrag(event)">
+        <span>📁 File Explorer</span>
+        <button onclick="closeApp('fileExplorer')">✖</button>
+      </div>
+      <div class="content">
+        <div id="file-list">
+          <div class="file-item" draggable="true" ondragstart="startFileDrag(event)">cosmic_notes.txt</div>
+          <div class="file-item" draggable="true" ondragstart="startFileDrag(event)">star_map_data.json</div>
+          <div class="file-item" draggable="true" ondragstart="startFileDrag(event)">ai_log.log</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="appStore" class="window" style="top:100px; left:100px; width:800px; height:600px;">
+      <div class="title-bar" onmousedown="startDrag(event)">
+        <span>🏬 Cosmic Web App Store</span>
+        <button onclick="closeApp('appStore')">✖</button>
+      </div>
+      <div class="content">
+        <h2>Featured Apps</h2>
+        <div class="project-filters">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="game">Games</button>
+          <button class="filter-btn" data-filter="tool">Tools</button>
+          <button class="filter-btn" data-filter="web">Web</button>
+        </div>
+        <div class="app-store-grid" id="app-list"></div>
+      </div>
+    </div>
+
+    <!-- Enhanced App Windows -->
+    <div id="cosmicBible" class="window" style="top:200px; left:200px;">
+      <div class="title-bar" onmousedown="startDrag(event)">
+        <span>📖 Cosmic Bible</span>
+        <button onclick="closeApp('cosmicBible')">✖</button>
+      </div>
+      <div class="content">
+        <h3>Verse of the Day</h3>
+        <p>"For God so loved the world, that he gave his only Son..."</p>
+        <p>John 3:16</p>
+        <input type="text" placeholder="Search Scripture..." style="width: 100%; margin: 10px 0;">
+        <div>Recent Notes: <ul><li>Matthew 5:3-12</li></ul></div>
+      </div>
+    </div>
+
+    <div id="switchBox" class="window" style="top:250px; left:250px;">
+      <div class="title-bar" onmousedown="startDrag(event)">
+        <span>🔄 SwitchBox</span>
+        <button onclick="closeApp('switchBox')">✖</button>
+      </div>
+      <div class="content">
+        <p>Drag a file here to convert:</p>
+        <div id="dropZone" style="border: 2px dashed var(--quantum-blue); padding: 20px; text-align: center;">Drop File</div>
+        <select style="margin: 10px 0;">
+          <option>PDF to Word</option>
+          <option>Word to PDF</option>
+        </select>
+        <button onclick="convertFile()">Convert</button>
+      </div>
+    </div>
+
+    <div id="quickWrap" class="window" style="top:300px; left:300px;">
+      <div class="title-bar" onmousedown="startDrag(event)">
+        <span>💬 Quick Wrap</span>
+        <button onclick="closeApp('quickWrap')">✖</button>
+      </div>
+      <div class="content">
+        <div id="chatArea" style="height: 300px; overflow-y: auto; border: 1px solid var(--quantum-blue); padding: 10px;"></div>
+        <input type="text" id="chatInput" placeholder="Type a message..." style="width: 100%; margin-top: 10px;">
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+
+    <!-- Today View -->
+    <div id="today-view">
+      <div class="widget">
+        <h3>Weather</h3>
+        <p>Clear Skies, 72°F</p>
+      </div>
+      <div class="widget">
+        <h3>Calendar</h3>
+        <p>June 13, 2025</p>
+        <p>Portal Opening at 3:33 AM</p>
+      </div>
+      <div class="widget">
+        <h3>Notifications</h3>
+        <p>New app updates available!</p>
+      </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div id="search-bar">
+      <input type="text" id="searchInput" placeholder="Search apps, files, settings..." oninput="searchSystem()">
+    </div>
+
+    <!-- Dock -->
+    <div id="dock">
+      <img class="dock-icon" src="https://cdn-icons-png.flaticon.com/512/1828/1828911.png" onclick="openApp('soulApp')" title="SoulScan">
+      <img class="dock-icon" src="https://cdn-icons-png.flaticon.com/512/4712/4712039.png" onclick="openApp('aiApp')" title="CoderrGPT">
+      <img class="dock-icon" src="https://cdn-icons-png.flaticon.com/512/1039/1039649.png" onclick="openApp('appStore')" title="App Store">
+    </div>
+
+    <!-- Taskbar -->
+    <div id="taskbar">
+      <button onclick="toggleStartMenu()">🛸 Cosmos Coderr OS</button>
+      <div id="start-menu">
+        <button onclick="openApp('soulApp')">SoulScan</button>
+        <button onclick="openApp('aiApp')">CoderrGPT</button>
+        <button onclick="openApp('mapApp')">Star Map</button>
+        <button onclick="openApp('settingsApp')">Settings</button>
+        <button onclick="openApp('fileExplorer')">File Explorer</button>
+        <button onclick="openApp('appStore')">App Store</button>
+        <button onclick="openApp('cosmicBible')">Cosmic Bible</button>
+        <button onclick="openApp('switchBox')">SwitchBox</button>
+        <button onclick="openApp('quickWrap')">Quick Wrap</button>
+        <button onclick="logout()">Power Off</button>
+      </div>
+      <div id="system-tray">
+        <img class="tray-icon" src="https://cdn-icons-png.flaticon.com/512/3524/3524659.png" onclick="toggleControlPanel()" title="Control Panel">
+        <img class="tray-icon" src="https://cdn-icons-png.flaticon.com/512/159/159489.png" onclick="toggleNotificationCenter()" title="Notifications">
+        <img class="tray-icon" src="https://cdn-icons-png.flaticon.com/512/1146/1146867.png" onclick="toggleTodayView()" title="Today View">
+        <div id="clock"></div>
+      </div>
+    </div>
+
+    <!-- Notification Center -->
+    <div id="notification-center">
+      <h3>Notifications</h3>
+      <div id="notification-list">
+        <div class="notification">New update available!</div>
+        <div class="notification">SoulScan complete.</div>
+      </div>
+    </div>
+
+    <!-- Control Panel -->
+    <div id="control-panel">
+      <button onclick="toggleNotificationCenter()">Notifications</button>
+      <button onclick="openApp('settingsApp')">Settings</button>
+      <button onclick="toggleTodayView()">Today View</button>
+      <button onclick="logout()">Power Off</button>
     </div>
   </div>
 
   <script>
+    const bootSound = document.getElementById('bootSound');
+    const clickSound = document.getElementById('clickSound');
+    bootSound.play();
+
+    const apps = [
+      { id: 'pic2puzz', name: 'Pic2Puzz', category: 'game', url: 'https://pic2puzz.space', icon: './pic.jpg', desc: 'Turn img/vid to Puzzle' },
+      { id: 'glowRadio', name: 'Glow Radio', category: 'tool', url: 'https://onetwo346.github.io/glow-radio-', icon: './glowlogo.jpg', desc: 'Stream Radio' },
+      { id: 'akanWise', name: 'Akan Wise Saying', category: 'tool', url: 'https://onetwo346.github.io/wise-saying', icon: './akanlogo.jpg', desc: 'True wisdom' },
+      { id: 'randomQuote', name: 'Random Quote', category: 'tool', url: 'https://onetwo346.github.io/random-quote-generator-RQG', icon: './random.jpg', desc: 'Find Inspiration' },
+      { id: 'fetchCatch', name: 'Fetch or Catch', category: 'game', url: 'https://onetwo346.github.io/fetch-or-catch/', icon: './fc.jpg', desc: 'Catch Treats' },
+      { id: 'babyChecker', name: 'Baby Checker', category: 'tool', url: 'https://onetwo346.github.io/BABYYCHECKER/', icon: './babychecker.jpg', desc: 'Explore Signs' },
+      { id: 'cosmicBible', name: 'Cosmic Bible', category: 'tool', url: 'https://onetwo346.github.io/cb/', icon: './cosmicbible.jpg', desc: 'Experience Scripture' },
+      { id: 'earthquakeAnalyst', name: 'Earthquake Analyst', category: 'tool', url: 'https://earthquakeanalyst.space/', icon: './quake.jpg', desc: 'Monitor Seismic' },
+      { id: 'switchBox', name: 'SwitchBox', category: 'tool', url: 'https://onetwo346.github.io/switchbox/', icon: './switchbox.jpg', desc: 'Convert Files' },
+      { id: 'xoWars', name: 'XOWARS', category: 'game', url: 'https://xowars.space/', icon: './xowars.jpg', desc: 'Strategic Battle' },
+      { id: 'quickWrap', name: 'Quick Wrap', category: 'web', url: 'https://quickwrap.space', icon: './quickwrap.jpg', desc: 'Secure Chat' },
+      { id: 'wordGridQuest', name: 'Word Grid Quest', category: 'game', url: 'https://wordgridquest.xyz/', icon: './word.jpg', desc: 'Word Adventure' },
+      { id: 'invoiceGen', name: 'Invoice Generator Pro', category: 'tool', url: 'https://onetwo346.github.io/invoice-generator', icon: './invoice.jpg', desc: 'Generate Invoices' },
+      { id: 'dipImage', name: 'Dip Image Generator', category: 'tool', url: 'https://dipimagegenerator.lat', icon: './dip.jpg', desc: 'Create Art' },
+      { id: 'makeRecipe', name: 'Make This Recipe', category: 'web', url: 'https://onetwo346.github.io/Make-this-recipe-', icon: './makethis.jpg', desc: 'Find Recipes' },
+      { id: 'horonum', name: 'Horonum', category: 'web', url: 'https://onetwo346.github.io/horonum', icon: './horonum.jpg', desc: 'Discover Astrology' },
+      { id: 'timeEscape', name: 'Time Escape', category: 'game', url: 'https://onetwo346.github.io/space-shooting', icon: './spaceshooter.jpg', desc: 'Space Adventure' },
+      { id: 'beeek', name: 'Beeek', category: 'tool', url: 'https://beeek.online', icon: './beeek.jpg', desc: 'Voice Magic' },
+      { id: 'resumeCover', name: 'Resume/Cover Letter', category: 'tool', url: 'https://onetwo346.github.io/Resume-cover-letter-', icon: './resume.jpg', desc: 'Career Builder' },
+      { id: 'giftIdea', name: 'Gift Idea Genius', category: 'tool', url: 'https://onetwo346.github.io/Gift-idea-genius-', icon: './giftidea.jpg', desc: 'Gift Ideas' },
+      { id: 'cosmicHorizon', name: 'Cosmic Horizon', category: 'game', url: 'https://cosmichorizon.space', icon: './cosmichorizon.jpg', desc: 'Space Explorer' },
+    ];
+
+    setTimeout(() => {
+      document.getElementById("login").style.display = "flex";
+    }, 5000);
+
+    const usernameInput = document.getElementById('username');
+    usernameInput.value = localStorage.getItem('cosmicName') || '';
+
     function launchOS() {
-      document.getElementById('intro').style.display = 'none';
-      document.getElementById('desktop').style.display = 'block';
+      clickSound.play();
+      localStorage.setItem('cosmicName', usernameInput.value);
+      localStorage.setItem('rank', document.getElementById('rank').value);
+      document.getElementById("login").style.display = "none";
+      document.getElementById("desktop").style.display = "block";
+      drawStarChart();
+      loadAppStore();
+      loadInstalledApps();
     }
 
-    function openApp() {
-      document.getElementById('appWindow').style.display = 'block';
+    function logout() {
+      clickSound.play();
+      document.getElementById("desktop").style.display = "none";
+      document.getElementById("login").style.display = "flex";
     }
 
-    let dragItem = null;
-    let offsetX, offsetY;
+    let zIndex = 10;
+    function openApp(id) {
+      clickSound.play();
+      const app = document.getElementById(id);
+      app.style.display = "block";
+      app.style.zIndex = zIndex++;
+      app.querySelector('.content').scrollTop = 0;
+      gsap.from(app, { scale: 0.8, opacity: 0, duration: 0.3 });
+    }
 
+    function closeApp(id) {
+      clickSound.play();
+      const app = document.getElementById(id);
+      gsap.to(app, { scale: 0.8, opacity: 0, duration: 0.3, onComplete: () => app.style.display = "none" });
+    }
+
+    let dragTarget, offsetX, offsetY;
     function startDrag(e) {
-      dragItem = e.target.parentElement;
-      offsetX = e.clientX - dragItem.offsetLeft;
-      offsetY = e.clientY - dragItem.offsetTop;
-      document.onmousemove = dragMove;
+      dragTarget = e.target.closest('.window');
+      offsetX = e.clientX - dragTarget.offsetLeft;
+      offsetY = e.clientY - dragTarget.offsetTop;
+      dragTarget.style.zIndex = zIndex++;
+      document.onmousemove = drag;
       document.onmouseup = stopDrag;
     }
 
-    function dragMove(e) {
-      if (!dragItem) return;
-      dragItem.style.left = (e.clientX - offsetX) + 'px';
-      dragItem.style.top = (e.clientY - offsetY) + 'px';
+    function drag(e) {
+      if (!dragTarget) return;
+      dragTarget.style.left = (e.clientX - offsetX) + "px";
+      dragTarget.style.top = (e.clientY - offsetY) + "px";
     }
 
     function stopDrag() {
-      dragItem = null;
+      dragTarget = null;
       document.onmousemove = null;
       document.onmouseup = null;
     }
-  </script>
 
+    function startFileDrag(e) {
+      e.dataTransfer.setData("text", e.target.innerText);
+    }
+
+    function toggleStartMenu() {
+      clickSound.play();
+      const menu = document.getElementById('start-menu');
+      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function toggleNotificationCenter() {
+      clickSound.play();
+      const center = document.getElementById('notification-center');
+      center.style.display = center.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function toggleControlPanel() {
+      clickSound.play();
+      const panel = document.getElementById('control-panel');
+      panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function toggleTodayView() {
+      clickSound.play();
+      const view = document.getElementById('today-view');
+      view.style.display = view.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("clock").innerText = now.toLocaleTimeString();
+    }
+    setInterval(updateClock, 1000);
+
+    function drawStarChart() {
+      const canvas = document.getElementById('starChart');
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < 50; i++) {
+        ctx.beginPath();
+        ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(30, 144, 255, ${Math.random()})`;
+        ctx.fill();
+      }
+    }
+
+    function changeBackground() {
+      clickSound.play();
+      const bg = document.getElementById('bgSelect').value;
+      document.getElementById('desktop').style.backgroundImage = `url(${bg})`;
+      document.getElementById('login').style.backgroundImage = `url(${bg})`;
+      localStorage.setItem('background', bg);
+    }
+
+    function changeTheme() {
+      clickSound.play();
+      const theme = document.getElementById('themeSelect').value;
+      const color = theme === 'blue' ? '#00f7ff' : '#800080';
+      document.querySelectorAll('.window').forEach(w => w.style.borderColor = color);
+      document.querySelectorAll('.title-bar').forEach(tb => tb.style.background = `linear-gradient(90deg, ${color}, ${theme === 'blue' ? '#00b7eb' : '#d8bfd8'})`);
+      localStorage.setItem('theme', theme);
+    }
+
+    function changeAccessibility() {
+      clickSound.play();
+      const mode = document.getElementById('accessSelect').value;
+      if (mode === 'high-contrast') {
+        document.body.style.filter = 'contrast(150%)';
+      } else {
+        document.body.style.filter = 'none';
+      }
+    }
+
+    function updateWorkspaces() {
+      clickSound.play();
+      const count = document.getElementById('workspaceCount').value;
+      const switcher = document.getElementById('workspace-switcher');
+      switcher.innerHTML = '';
+      for (let i = 1; i <= count; i++) {
+        const div = document.createElement('div');
+        div.className = 'workspace';
+        div.textContent = i;
+        div.onclick = () => switchWorkspace(i);
+        switcher.appendChild(div);
+      }
+    }
+
+    function switchWorkspace(num) {
+      clickSound.play();
+      alert(`Switched to Workspace ${num}`);
+    }
+
+    function loadAppStore() {
+      const appList = document.getElementById('app-list');
+      const fragment = document.createDocumentFragment();
+      apps.forEach(app => {
+        const div = document.createElement('div');
+        div.className = `app-item ${app.category}`;
+        div.innerHTML = `
+          <img src="${app.icon}" alt="${app.name} icon">
+          <h3>${app.name}</h3>
+          <p>${app.desc}</p>
+          <button onclick="installApp('${app.id}')">Install</button>
+        `;
+        fragment.appendChild(div);
+      });
+      appList.appendChild(fragment);
+
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const filter = btn.getAttribute('data-filter');
+          document.querySelectorAll('.app-item').forEach(item => {
+            if (filter === 'all' || item.classList.contains(filter)) {
+              item.style.display = 'block';
+            } else {
+              item.style.display = 'none';
+            }
+          });
+        });
+      });
+    }
+
+    function installApp(appId) {
+      clickSound.play();
+      const app = apps.find(a => a.id === appId);
+      let installedApps = JSON.parse(localStorage.getItem('installedApps') || '[]');
+      if (!installedApps.find(a => a.id === appId)) {
+        installedApps.push(app);
+        localStorage.setItem('installedApps', JSON.stringify(installedApps));
+        addDesktopIcon(app);
+        addNotification(`Installed ${app.name}!`);
+      }
+    }
+
+    function addDesktopIcon(app) {
+      const desktop = document.getElementById('desktop');
+      const icon = document.createElement('div');
+      icon.className = 'icon';
+      icon.style.top = `${60 + Math.floor(Math.random() * 300)}px`;
+      icon.style.left = `${300 + Math.random() * 300}px`;
+      icon.innerHTML = `
+        <img src="${app.icon}" />
+        <div>${app.name}</div>
+      `;
+      icon.onclick = () => openExternalApp(app.url, app.name);
+      desktop.appendChild(icon);
+    }
+
+    function loadInstalledApps() {
+      const installedApps = JSON.parse(localStorage.getItem('installedApps') || '[]');
+      installedApps.forEach(addDesktopIcon);
+    }
+
+    function openExternalApp(url, name) {
+      clickSound.play();
+      window.open(url, '_blank');
+      addNotification(`Launched ${name}`);
+    }
+
+    function addNotification(message) {
+      const list = document.getElementById('notification-list');
+      const notif = document.createElement('div');
+      notif.className = 'notification';
+      notif.innerText = message;
+      list.prepend(notif);
+      setTimeout(() => notif.remove(), 5000);
+    }
+
+    function convertFile() {
+      clickSound.play();
+      alert('File converted successfully!');
+    }
+
+    function sendMessage() {
+      clickSound.play();
+      const input = document.getElementById('chatInput');
+      const chatArea = document.getElementById('chatArea');
+      if (input.value.trim()) {
+        const msg = document.createElement('div');
+        msg.innerText = input.value;
+        chatArea.appendChild(msg);
+        chatArea.scrollTop = chatArea.scrollHeight;
+        input.value = '';
+      }
+    }
+
+    function searchSystem() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const results = apps.filter(app => app.name.toLowerCase().includes(query));
+      alert(`Found ${results.length} apps: ${results.map(a => a.name).join(', ')}`);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.code === 'Space') {
+        e.preventDefault();
+        const searchBar = document.getElementById('search-bar');
+        searchBar.style.display = searchBar.style.display === 'block' ? 'none' : 'block';
+        document.getElementById('searchInput').focus();
+      }
+    });
+
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    });
+
+    window.onload = () => {
+      const savedBg = localStorage.getItem('background');
+      if (savedBg) {
+        document.getElementById('desktop').style.backgroundImage = `url(${savedBg})`;
+        document.getElementById('login').style.backgroundImage = `url(${savedBg})`;
+        document.getElementById('bgSelect').value = savedBg;
+      }
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        document.getElementById('themeSelect').value = savedTheme;
+        changeTheme();
+      }
+    };
+
+    document.getElementById('aiInput')?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        clickSound.play();
+        const input = e.target.value;
+        const output = document.getElementById('aiOutput');
+        output.innerText = `Processing: ${input}\nResponse: Simulated AI response for "${input}".`;
+        e.target.value = '';
+      }
+    });
+
+    document.getElementById('dropZone')?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.target.style.background = 'rgba(0, 247, 255, 0.2)';
+    });
+
+    document.getElementById('dropZone')?.addEventListener('dragleave', (e) => {
+      e.target.style.background = 'none';
+    });
+
+    document.getElementById('dropZone')?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      e.target.style.background = 'none';
+      alert('File dropped for conversion!');
+    });
+  </script>
 </body>
 </html>
