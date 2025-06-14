@@ -161,10 +161,20 @@
       text-align: center;
       width: 100px;
       color: var(--quantum-blue);
-      cursor: pointer;
-      transition: transform 0.2s ease;
+      cursor: grab;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
       text-shadow: 0 0 6px #1e90ff;
       font-family: 'Exo 2', sans-serif;
+      will-change: transform, left, top;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+    .icon.dragging {
+      cursor: grabbing;
+      box-shadow: 0 0 20px var(--quantum-blue);
+      transform: scale(1.05);
+      opacity: 0.9;
+      z-index: 1000;
     }
     .icon:hover {
       transform: scale(1.1);
@@ -173,6 +183,46 @@
       width: 80px;
       filter: drop-shadow(0 0 6px #1e90ff);
       border-radius: 15px;
+    }
+    #delete-icon {
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      width: 100px;
+      height: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: rgba(255, 0, 0, 0.2);
+      border-radius: 20px;
+      border: 2px solid rgba(255, 0, 0, 0.3);
+    }
+    
+    #delete-icon.active {
+      transform: scale(1.2);
+      background: rgba(255, 0, 0, 0.4);
+      border: 2px solid rgba(255, 0, 0, 0.6);
+      box-shadow: 0 0 30px var(--plasma-pink);
+    }
+    #delete-icon img {
+      width: 60px;
+      height: 60px;
+      filter: drop-shadow(0 0 10px var(--plasma-pink));
+    }
+    #delete-icon.drag-over {
+      transform: scale(1.2);
+      background: rgba(255, 0, 0, 0.3);
+      border: 2px solid rgba(255, 0, 0, 0.5);
+      box-shadow: 0 0 30px var(--plasma-pink);
+    }
+    #delete-icon:hover {
+      transform: scale(1.1);
+      background: rgba(255, 0, 0, 0.2);
+      border: 2px solid rgba(255, 0, 0, 0.3);
     }
     .window {
       position: absolute;
@@ -188,6 +238,14 @@
       overflow: auto;
       min-width: 400px;
       min-height: 300px;
+      will-change: transform, left, top;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      transition: box-shadow 0.3s ease;
+    }
+    .window.dragging {
+      box-shadow: 0 0 35px var(--quantum-blue);
+      opacity: 0.95;
     }
     .title-bar {
       background: linear-gradient(90deg, var(--quantum-blue), var(--plasma-pink));
@@ -420,6 +478,59 @@
       gap: 15px;
       padding: 20px;
     }
+    .draggable {
+      position: absolute;
+      cursor: move;
+      user-select: none;
+      transition: transform 0.05s ease, box-shadow 0.2s ease;
+    }
+
+    .draggable:active {
+      box-shadow: 0 0 20px var(--quantum-blue);
+      cursor: grabbing;
+    }
+
+    .icon {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      color: var(--quantum-blue);
+      padding: 10px;
+      border-radius: 10px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      z-index: 1;
+    }
+
+    .icon img {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 5px;
+    }
+
+    .icon:hover {
+      background: rgba(0, 247, 255, 0.1);
+      box-shadow: 0 0 15px var(--quantum-blue);
+    }
+
+    .notification {
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid var(--quantum-blue);
+      border-radius: 10px;
+      padding: 12px 20px;
+      margin: 10px;
+      color: var(--quantum-blue);
+      box-shadow: 0 0 10px var(--quantum-blue);
+      animation: slideIn 0.3s ease;
+      z-index: 1000;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
     .app-item {
       background: rgba(0, 0, 0, 0.7);
       border: 1px solid var(--quantum-blue);
@@ -464,29 +575,35 @@
 
   <div id="desktop">
     <!-- Desktop Icons -->
-    <div class="icon" style="top: 60px; left: 60px;" onclick="openApp('soulApp')">
+    <div class="icon draggable" style="top: 60px; left: 60px;" onclick="openApp('soulApp')">
       <img src="https://cdn-icons-png.flaticon.com/512/1828/1828911.png" />
       <div>SoulScan</div>
     </div>
-    <div class="icon" style="top: 60px; left: 180px;" onclick="openApp('aiApp')">
+    <div class="icon draggable" style="top: 60px; left: 180px;" onclick="openApp('aiApp')">
       <img src="https://cdn-icons-png.flaticon.com/512/4712/4712039.png" />
       <div>CoderrGPT</div>
     </div>
-    <div class="icon" style="top: 180px; left: 60px;" onclick="openApp('mapApp')">
+    <div class="icon draggable" style="top: 180px; left: 60px;" onclick="openApp('mapApp')">
       <img src="https://cdn-icons-png.flaticon.com/512/2995/2995329.png" />
       <div>Star Map</div>
     </div>
-    <div class="icon" style="top: 180px; left: 180px;" onclick="openApp('settingsApp')">
+    <div class="icon draggable" style="top: 180px; left: 180px;" onclick="openApp('settingsApp')">
       <img src="https://cdn-icons-png.flaticon.com/512/126/126794.png" />
       <div>Settings</div>
     </div>
-    <div class="icon" style="top: 300px; left: 60px;" onclick="openApp('fileExplorer')">
+    <div class="icon draggable" style="top: 300px; left: 60px;" onclick="openApp('fileExplorer')">
       <img src="https://cdn-icons-png.flaticon.com/512/1041/1041986.png" />
       <div>File Explorer</div>
     </div>
-    <div class="icon" style="top: 300px; left: 180px;" onclick="openApp('appStore')">
+    <div class="icon draggable" style="top: 300px; left: 180px;" onclick="openApp('appStore')">
       <img src="https://cdn-icons-png.flaticon.com/512/1039/1039649.png" />
       <div>App Store</div>
+    </div>
+    
+    <!-- Delete Icon -->
+    <div id="delete-icon">
+      <img src="https://cdn-icons-png.flaticon.com/512/3096/3096673.png" />
+      <div>Delete</div>
     </div>
 
     <!-- App Windows -->
@@ -532,8 +649,16 @@
       </div>
       <div class="content">
         <p>Background: <select id="bgSelect" onchange="changeBackground()">
-          <option value="https://images.unsplash.com/photo-1503923259440-784cf8a5e4cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80">Nebula</option>
-          <option value="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80">Galaxy</option>
+          <option value="https://images.unsplash.com/photo-1503923259440-784cf8a5e4cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80">Cosmic Nebula</option>
+          <option value="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80">Deep Galaxy</option>
+          <option value="https://images.unsplash.com/photo-1464802686167-b939a6910659?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80">Star Clusters</option>
+          <option value="https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80">Aurora Lights</option>
+          <option value="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80">Spiral Galaxy</option>
+          <option value="https://images.unsplash.com/photo-1543722530-d2c3201371e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80">Purple Nebula</option>
+          <option value="https://images.unsplash.com/photo-1445905595283-21f8ae8a33d2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80">Blue Cosmos</option>
+          <option value="https://images.unsplash.com/photo-1516339901601-2e1b62dc0c45?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80">Dark Matter</option>
+          <option value="https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80">Space Storm</option>
+          <option value="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80">Cosmic Web</option>
         </select></p>
         <p>Theme: <select id="themeSelect" onchange="changeTheme()">
           <option value="blue">Blue</option>
@@ -691,6 +816,7 @@
     </div>
   </div>
 
+  <script src="script.js"></script>
   <script>
     const bootSound = document.getElementById('bootSound');
     const clickSound = document.getElementById('clickSound');
@@ -736,6 +862,7 @@
       drawStarChart();
       loadAppStore();
       loadInstalledApps();
+      initializeDeleteIcon();
     }
 
     function logout() {
@@ -748,26 +875,61 @@
     function openApp(id) {
       clickSound.play();
       const app = document.getElementById(id);
+      if (!app) return;
+      
       app.style.display = "block";
       app.style.zIndex = zIndex++;
-      app.querySelector('.content').scrollTop = 0;
+      app.style.opacity = 1; // Ensure opacity is reset
+      app.style.transform = 'none'; // Reset any transforms
+      app.style.scale = 1; // Reset scale
+      if (app.querySelector('.content')) {
+        app.querySelector('.content').scrollTop = 0;
+      }
       gsap.from(app, { scale: 0.8, opacity: 0, duration: 0.3 });
+      
+      // If it's the app store, initialize it
+      if (id === 'appStore') {
+        loadAppStore();
+      }
     }
 
     function closeApp(id) {
       clickSound.play();
       const app = document.getElementById(id);
-      gsap.to(app, { scale: 0.8, opacity: 0, duration: 0.3, onComplete: () => app.style.display = "none" });
+      // Store the current position
+      const currentLeft = app.style.left;
+      const currentTop = app.style.top;
+      gsap.to(app, { 
+        scale: 0.8, 
+        opacity: 0, 
+        duration: 0.3, 
+        onComplete: () => {
+          // Hide the app
+          app.style.display = "none";
+          // Reset all animation properties but keep position
+          app.style.transform = 'none';
+          app.style.scale = 1;
+          app.style.opacity = 1;
+          app.style.left = currentLeft;
+          app.style.top = currentTop;
+        }
+      });
     }
 
     let dragTarget, offsetX, offsetY;
     function startDrag(e) {
-      dragTarget = e.target.closest('.window');
-      offsetX = e.clientX - dragTarget.offsetLeft;
-      offsetY = e.clientY - dragTarget.offsetTop;
-      dragTarget.style.zIndex = zIndex++;
+      const titleBar = e.target.closest('.title-bar');
+      if (!titleBar) return;
+      
+      dragTarget = titleBar.parentElement;
+      const rect = dragTarget.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+      
       document.onmousemove = drag;
       document.onmouseup = stopDrag;
+      
+      dragTarget.style.zIndex = zIndex++;
     }
 
     function drag(e) {
@@ -877,15 +1039,18 @@
 
     function loadAppStore() {
       const appList = document.getElementById('app-list');
+      if (!appList) return; // Exit if app list doesn't exist yet
+      
+      appList.innerHTML = ''; // Clear existing content
       const fragment = document.createDocumentFragment();
       apps.forEach(app => {
         const div = document.createElement('div');
         div.className = `app-item ${app.category}`;
         div.innerHTML = `
-          <img src="${app.icon}" alt="${app.name} icon">
+          <img src="${app.icon || 'https://cdn-icons-png.flaticon.com/512/1828/1828911.png'}" alt="${app.name} icon">
           <h3>${app.name}</h3>
           <p>${app.desc}</p>
-          <button onclick="installApp('${app.id}')">Install</button>
+          <button onclick="event.stopPropagation(); installApp('${app.id}');">Install</button>
         `;
         fragment.appendChild(div);
       });
@@ -911,6 +1076,8 @@
     function installApp(appId) {
       clickSound.play();
       const app = apps.find(a => a.id === appId);
+      if (!app) return;
+      
       let installedApps = JSON.parse(localStorage.getItem('installedApps') || '[]');
       if (!installedApps.find(a => a.id === appId)) {
         installedApps.push(app);
@@ -923,14 +1090,152 @@
     function addDesktopIcon(app) {
       const desktop = document.getElementById('desktop');
       const icon = document.createElement('div');
-      icon.className = 'icon';
+      icon.className = 'icon draggable';
       icon.style.top = `${60 + Math.floor(Math.random() * 300)}px`;
       icon.style.left = `${300 + Math.random() * 300}px`;
       icon.innerHTML = `
-        <img src="${app.icon}" />
+        <img src="${app.icon || 'https://cdn-icons-png.flaticon.com/512/1828/1828911.png'}" />
         <div>${app.name}</div>
       `;
-      icon.onclick = () => openExternalApp(app.url, app.name);
+      
+      // Set app data and make draggable
+      icon.setAttribute('data-app-id', app.id);
+      icon.setAttribute('data-app-name', app.name);
+      icon.draggable = true;
+      
+      // Handle clicks for opening the app
+      icon.addEventListener('click', (e) => {
+        if (!icon.classList.contains('dragging')) {
+          openExternalApp(app.url, app.name);
+        }
+      });
+      
+      // Handle dragging
+      let isDragging = false;
+      let dragTimeout;
+      
+      icon.addEventListener('mousedown', (e) => {
+        if (e.target === icon || e.target.parentNode === icon) {
+          isDragging = true;
+          dragTarget = icon;
+          const rect = icon.getBoundingClientRect();
+          offsetX = e.clientX - rect.left;
+          offsetY = e.clientY - rect.top;
+          icon.style.zIndex = zIndex++;
+          document.onmousemove = drag;
+          document.onmouseup = () => {
+            isDragging = false;
+            icon.classList.remove('dragging');
+            stopDrag();
+          };
+        }
+      });
+      
+      // Handle touch events for mobile devices
+      icon.addEventListener('touchstart', (e) => {
+        e.stopPropagation();
+        isDragging = true;
+        dragTarget = icon;
+        const touch = e.touches[0];
+        const rect = icon.getBoundingClientRect();
+        offsetX = touch.clientX - rect.left;
+        offsetY = touch.clientY - rect.top;
+        icon.style.zIndex = zIndex++;
+        
+        // Simulate drag start for deletion
+        const dataTransfer = {
+          setData: function(key, value) {
+            this[key] = value;
+          },
+          getData: function(key) {
+            return this[key];
+          },
+          'text/plain': app.name,
+          'application/app-id': app.id
+        };
+        dataTransfer.setData('text/plain', app.name);
+        dataTransfer.setData('application/app-id', app.id);
+        icon.classList.add('dragging');
+        
+        document.ontouchmove = function(ev) {
+          ev.preventDefault();
+          const t = ev.touches[0];
+          icon.style.left = `${t.clientX - offsetX}px`;
+          icon.style.top = `${t.clientY - offsetY}px`;
+          
+          // Check if we're over the delete icon
+          const deleteIcon = document.getElementById('delete-icon');
+          if (deleteIcon) {
+            const deleteRect = deleteIcon.getBoundingClientRect();
+            if (t.clientX >= deleteRect.left && t.clientX <= deleteRect.right &&
+                t.clientY >= deleteRect.top && t.clientY <= deleteRect.bottom) {
+              deleteIcon.classList.add('drag-over');
+            } else {
+              deleteIcon.classList.remove('drag-over');
+            }
+          }
+        };
+        
+        document.ontouchend = function(ev) {
+          ev.preventDefault();
+          isDragging = false;
+          icon.classList.remove('dragging');
+          document.ontouchmove = null;
+          document.ontouchend = null;
+          
+          // Check if dropped on delete icon
+          const deleteIcon = document.getElementById('delete-icon');
+          if (deleteIcon && deleteIcon.classList.contains('drag-over')) {
+            deleteIcon.classList.remove('drag-over');
+            const appId = dataTransfer.getData('application/app-id');
+            const appName = dataTransfer.getData('text/plain');
+            if (appId) {
+              const appIcon = document.querySelector(`.icon[data-app-id="${appId}"]`);
+              if (appIcon) {
+                const deleteIconRect = deleteIcon.getBoundingClientRect();
+                const appIconRect = appIcon.getBoundingClientRect();
+                const deltaX = (deleteIconRect.left + deleteIconRect.width/2) - (appIconRect.left + appIconRect.width/2);
+                const deltaY = (deleteIconRect.top + deleteIconRect.height/2) - (appIconRect.top + appIconRect.height/2);
+                appIcon.style.transition = 'all 0.15s ease';
+                appIcon.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0)`;
+                appIcon.style.opacity = '0';
+                setTimeout(() => {
+                  appIcon.remove();
+                  let installedApps = JSON.parse(localStorage.getItem('installedApps') || '[]');
+                  installedApps = installedApps.filter(app => app.id !== appId);
+                  localStorage.setItem('installedApps', JSON.stringify(installedApps));
+                  addNotification(`Removed ${appName} from desktop`);
+                  clickSound.play();
+                }, 150);
+              }
+            }
+          }
+        };
+      });
+      
+      // Handle drag start for deletion
+      icon.addEventListener('dragstart', (e) => {
+        e.stopPropagation();
+        isDragging = true;
+        icon.classList.add('dragging');
+        e.dataTransfer.setData('text/plain', app.name);
+        e.dataTransfer.setData('application/app-id', app.id);
+        e.dataTransfer.effectAllowed = 'move';
+        
+        // Clear dragging state if drag operation takes too long
+        dragTimeout = setTimeout(() => {
+          isDragging = false;
+          icon.classList.remove('dragging');
+        }, 3000);
+      });
+      
+      // Handle drag end
+      icon.addEventListener('dragend', () => {
+        isDragging = false;
+        icon.classList.remove('dragging');
+        clearTimeout(dragTimeout);
+      });
+      
       desktop.appendChild(icon);
     }
 
@@ -1029,6 +1334,128 @@
       e.preventDefault();
       e.target.style.background = 'none';
       alert('File dropped for conversion!');
+    });
+    
+    // Initialize delete functionality
+    function initializeDeleteIcon() {
+      const deleteIcon = document.getElementById('delete-icon');
+      if (!deleteIcon) return;
+      
+      // Track delete mode state
+      let deleteMode = false;
+      
+      // Add click handler for delete icon
+      deleteIcon.addEventListener('click', () => {
+        deleteMode = !deleteMode;
+        if (deleteMode) {
+          deleteIcon.classList.add('active');
+          addNotification('Delete mode ON - Click any app to delete it');
+        } else {
+          deleteIcon.classList.remove('active');
+          addNotification('Delete mode OFF');
+        }
+        clickSound.play();
+      });
+      
+      // Add click handler for desktop icons when in delete mode
+      document.addEventListener('click', (e) => {
+        if (!deleteMode) return;
+        
+        const icon = e.target.closest('.icon');
+        if (icon && icon.hasAttribute('data-app-id')) {
+          const appId = icon.getAttribute('data-app-id');
+          const appName = icon.getAttribute('data-app-name');
+          
+          // Simple fade out animation
+          icon.style.transition = 'all 0.2s ease';
+          icon.style.transform = 'scale(0)';
+          icon.style.opacity = '0';
+          
+          setTimeout(() => {
+            icon.remove();
+            
+            // Remove from localStorage
+            let installedApps = JSON.parse(localStorage.getItem('installedApps') || '[]');
+            installedApps = installedApps.filter(app => app.id !== appId);
+            localStorage.setItem('installedApps', JSON.stringify(installedApps));
+            
+            addNotification(`Removed ${appName} from desktop`);
+            clickSound.play();
+          }, 200);
+          
+          // Turn off delete mode after deleting
+          deleteMode = false;
+          deleteIcon.classList.remove('active');
+        }
+      });
+      
+      // Handle drag and drop events
+      deleteIcon.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        deleteIcon.classList.add('drag-over');
+      });
+      
+      deleteIcon.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        deleteIcon.classList.add('drag-over');
+      });
+      
+      deleteIcon.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        deleteIcon.classList.remove('drag-over');
+      });
+      
+      deleteIcon.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        deleteIcon.classList.remove('drag-over');
+        
+        const appId = e.dataTransfer.getData('application/app-id');
+        const appName = e.dataTransfer.getData('text/plain');
+        
+        if (appId) {
+          const appIcon = document.querySelector(`.icon[data-app-id="${appId}"]`);
+          if (appIcon) {
+            // Simple fade out animation
+            appIcon.style.transition = 'all 0.2s ease';
+            appIcon.style.transform = 'scale(0)';
+            appIcon.style.opacity = '0';
+            
+            setTimeout(() => {
+              appIcon.remove();
+              
+              // Remove from localStorage
+              let installedApps = JSON.parse(localStorage.getItem('installedApps') || '[]');
+              installedApps = installedApps.filter(app => app.id !== appId);
+              localStorage.setItem('installedApps', JSON.stringify(installedApps));
+              
+              addNotification(`Removed ${appName} from desktop`);
+              clickSound.play();
+            }, 200);
+          }
+        }
+      });
+      
+      // Prevent default drag behavior on desktop
+      document.addEventListener('dragover', (e) => e.preventDefault(), true);
+      document.addEventListener('drop', (e) => e.preventDefault(), true);
+    }
+    
+    // Initialize delete icon when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeDeleteIcon();
+      
+      // Make existing icons draggable
+      document.querySelectorAll('.icon.draggable').forEach(icon => {
+        if (!icon.getAttribute('data-app-id') && icon.querySelector('div')) {
+          const appName = icon.querySelector('div').textContent;
+          icon.setAttribute('data-app-id', appName.toLowerCase().replace(/\s+/g, '-'));
+          icon.setAttribute('data-app-name', appName);
+        }
+        
+        icon.draggable = true;
+      });
     });
   </script>
 </body>
